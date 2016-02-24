@@ -10,8 +10,8 @@ cat << "EOF"
 #
 #		Welcome To NordSec Toolkit!
 #
-# 	- This is simple script to merge multiple
-#	  blacklists cross multiple servers for fail2ban or any other firewall.
+# 	- A script to merge multiple blacklists cross multiple servers
+#	  for fail2ban or any other firewall.
 #
 #	- Make a complete backup of Mysql.
 #
@@ -24,7 +24,7 @@ function srvconfig {
 read -p "        Run Config? (y/n)?" CONT
 if [ "$CONT" == "y" ]; then
   echo "Creating config file, please wait...";
-	echo "Hostname or IP for server1"; read 
+	echo "Type a Hostname or IP for server1";
 sleep 3
 else
   echo "Press [Enter] to continue to menu"; read
@@ -34,18 +34,18 @@ srvconfig
 ############# Config ##############
 # Firewall-Synch #
 
-srv1=""
-usr1=""
-bl1="/etc/fail2ban/ip.blocklist.list"
+server2=""
+username1=""
+blocklist1="/etc/fail2ban/ip.blocklist.list"
 
-srv2="db01.isp.nordsec.no"
-usr2="root"
-bl2="/etc/fail2ban/ip.blocklist.list"
-opdir="/home/alexander/"
+server2=""
+username2=""
+blocklist2="/etc/fail2ban/ip.blocklist.list"
+opdir="/example/dir/ip.blocklist.list"
 # Mysql #
 
-mysqlsrv="db01.isp.nordsec.no"
-mysqluser="Alexander"
+mysqlsrv=""
+mysqluser=""
 #mysqlpasswd=""
 ###########################################
 
@@ -66,7 +66,7 @@ select opt in $OPTIONS; do
 	echo "Synching Firewall Now"
 	echo "Copying blocklist from server 1"
 # Move the list of blocked ip's from server 1 to server 2#
-	scp $blocklist1 $usr2'@'$srv2:/tmp/ip.blocklist.list1
+	scp $blocklist1 $username2'@'$server2:/tmp/ip.blocklist.list1
 
 	echo "merging the blocklists"
 #Now ssh in to server 2 and add blocked ip from server 1 the to blocklist on server 2#
@@ -84,7 +84,7 @@ select opt in $OPTIONS; do
 	scp $blocklist2 $username1'@'$server1:$opdir "
 
 # And merge the file again #
-		mv /home/alexander/ip.blocklist.list /tmp/ip.blocklist.list1
+		mv $opdir /tmp/ip.blocklist.list1
 		mv /etc/fail2ban/ip.blocklist.list /tmp/ip.blocklist.list2
 		cat /tmp/ip.blocklist.list1 /tmp/ip.blocklist.list2 > $blocklist1
 	echo "Cleaning up files NOW"
@@ -93,8 +93,8 @@ select opt in $OPTIONS; do
 
 	elif [ "$opt" = "Server-Settings" ]; then
 	
-	[[ -f ./${sname} ]] && read -p "File exists. Are you sure? " -n 1
-	[[ ! $REPLY =~ ^[Yy]$ ]] && return 1
+	#[[ -f ./${sname} ]] && read -p "Config File exists. Are you sure? " -n 1
+	#[[ ! $REPLY =~ ^[Yy]$ ]] && return 1
 	srvconfig
 
 
@@ -105,7 +105,6 @@ select opt in $OPTIONS; do
 	elif [ "$opt" = "Quit" ]; then
 	exit
 	else
-
 	echo "Bad option"
 
 fi
