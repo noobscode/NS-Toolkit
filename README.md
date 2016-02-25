@@ -11,6 +11,8 @@ Did someone say features?
 
 * Cross-platform: Mac and Linux are officially supported.
 * Written in bash
+* It uses ssh (Secure Shell) to pass commands, and scp (Secure Copy) to transfer files back and forth the individual    servers/clients.
+* mysqldump for database backup
 
 * Synch Lists/Text files cross multiple servers
 * Do a complete backup of Mysql
