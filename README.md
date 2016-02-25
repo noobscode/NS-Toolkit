@@ -44,7 +44,21 @@ It wil ask you to create a config file, follow the promts on the way.
     1) Synch-Firewall   3) Server-Settings	5) Quit
     2) Database-Backup  4) Help
 ```
+Configuration File
+------------------
+```
+server1=some.hostname.or.IP
+username1=Michael
+blocklist1=/etc/fail2ban/blacklist
 
+server2=some.hostname.or.IP
+username2=root
+blocklist2=/etc/fail2ban/blacklist
+
+mysqlsrv=some.hostname.or.IP
+mysqluser=John
+backupdir=/root/mysqlbackup/
+```
 
 Support This Project
 --------------------
