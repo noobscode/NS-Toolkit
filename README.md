@@ -17,10 +17,7 @@ Did someone say features?
 
 How To Run
 ----------
-* $ git clone https://github.com/nordsec/NS-Toolkit.git
-* $ cd NS-Toolkit/
-* $ chmod +x NS-Toolkit.sh
-It wil ask you to create a config file, follow the promts on the way.
+https://github.com/nordsec/NS-Toolkit/wiki/Configure-and-Running-The-Toolkit
 
 ```
   #    _   _  _____   _______          _ _    _ _
