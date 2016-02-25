@@ -70,4 +70,3 @@ Author
   -----------
 * https://www.hackingdefinedexperts.com
 * https://github.com/nordsec/NS-Toolkit
-  ```
