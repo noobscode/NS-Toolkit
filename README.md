@@ -1,5 +1,17 @@
 # NordSec Toolkit #
+```
+  #    _   _  _____   _______          _ _    _ _
+  #   | \ | |/ ____| |__   __|        | | |  (_) |
+  #   |  \| | (___      | | ___   ___ | | | ___| |_
+  #   | . ` |\___ \     | |/ _ \ / _ \| | |/ / | __|
+  #   | |\  |____) |    | | (_) | (_) | |   <| | |_
+  #   |_| \_|_____/     |_|\___/ \___/|_|_|\_\_|\__|  
+  #
+  #		       Welcome To NordSec Toolkit!
 
+    1) Synch-Firewall   3) Reconfigure	5) Quit
+    2) Database-Backup  4) Help
+```
 A command-line utility that I made to synch firewall IP-blacklists cross multiple servers. But after some x hours time scripting it turned out to be the start of a toolkit.
 
 * GitHub: https://github.com/nordsec/NS-Toolkit
@@ -23,44 +35,6 @@ Tools available in the Toolbox:
 How To Run
 ----------
 https://github.com/nordsec/NS-Toolkit/wiki/Configure-and-Running-The-Toolkit
-
-```
-  #    _   _  _____   _______          _ _    _ _
-  #   | \ | |/ ____| |__   __|        | | |  (_) |
-  #   |  \| | (___      | | ___   ___ | | | ___| |_
-  #   | . ` |\___ \     | |/ _ \ / _ \| | |/ / | __|
-  #   | |\  |____) |    | | (_) | (_) | |   <| | |_
-  #   |_| \_|_____/     |_|\___/ \___/|_|_|\_\_|\__|  
-  #
-  #		Welcome To NordSec Toolkit!
-  #
-  # 	- This is a Really handy script to merge multiple
-  #	  blacklists cross multiple servers for fail2ban or any other firewall.
-  #
-  #	- Its also possible to make a complete backup of Mysql.
-  #
-  # 	Created by Alexander Nordbø on the 23.02.2016
-  # 	                Visit us at
-  #		https://www.hackingdefinedexperts.com
-  #		https://github.com/nordsec/NS-Toolkit
-    1) Synch-Firewall   3) Server-Settings	5) Quit
-    2) Database-Backup  4) Help
-```
-Configuration File
-------------------
-```
-server1=some.hostname.or.IP
-username1=Michael
-blocklist1=/etc/fail2ban/blacklist
-
-server2=some.hostname.or.IP
-username2=root
-blocklist2=/etc/fail2ban/blacklist
-
-mysqlsrv=some.hostname.or.IP
-mysqluser=John
-backupdir=/root/mysqlbackup/
-```
 
 Support This Project
 --------------------
