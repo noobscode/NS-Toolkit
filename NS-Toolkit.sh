@@ -39,7 +39,7 @@ read -p " Write the full dir to list (/etc/fail2ban/blacklist)   :" blocklist1;
 read -p " Whats the Server2 Hostname or IP?   :" server2;
 read -p " Whats the Server2 Username?   :" username2;
 read -p " Write the full dir to list (/etc/fail2ban/blacklist)   :" blocklist2;
-read -p " Optional Directory on server2   :" opdir2;
+#read -p " Optional Directory on server2   :" opdir2;
 
 # Mysql
 read -p " Whats the Mysql's Hostname?   :" mysqlsrv;
@@ -50,18 +50,19 @@ sleep 3
 
 printf '' "# This is the configuration file for NS-Toolkit. Feel free to edit manually #" '' > config_file
 printf '%s\n' "server1${id}=${server1}" "username1${id}=${username1}" "blocklist1${id}=${blocklist1}" '' >> config_file
-printf '%s\n' "server2${id}=${server2}" "username2${id}=${username2}" "blocklist2${id}=${blocklist2}" "opdir2${id}=${opdir2}" '' >> config_file
+printf '%s\n' "server2${id}=${server2}" "username2${id}=${username2}" "blocklist2${id}=${blocklist2}" '' >> config_file
 printf '%s\n' "mysqlsrv${id}=${mysqlsrv}" "mysqluser${id}=${mysqluser}" "backupdir${id}=${backupdir}" '' >> config_file
 
-echo "Configuration completed succsessfully! Press [Enter] to continue"; read 
+echo "Configuration completed succsessfully! Press [Enter] to continue"; read -r
 clear;
 else
-  echo "Press [Enter] to continue to menu"; read
+  echo "Press [Enter] to continue to menu"; read -r
 clear;
 fi
 }
 srvconfig
-. config_file
+# shellcheck disable=SC1091
+source config_file
 
 header
 
@@ -82,7 +83,6 @@ select opt in $OPTIONS; do
 	elif [ "$opt" = "Synch-Firewall" ]; then
 	echo "Synching Firewall Now"
 	echo "Copying blocklist from server 1"
-
 # Move the list of blocked ip's from server 1 to server 2#
 	scp $blocklist1 $username2'@'$server2:/tmp/ip.blocklist.list1
 
@@ -92,7 +92,7 @@ select opt in $OPTIONS; do
 		mv $blocklist2 /tmp/ip.blocklist.list2
 		cat /tmp/ip.blocklist.list1 /tmp/ip.blocklist.list2 > $blocklist2
 	echo "Cleaning up"
-		rm /tmp/*
+		rm /tmp/ip.*
 	echo "restarting services"
 		sudo /etc/init.d/fail2ban restart "
 sleep 3
@@ -100,14 +100,15 @@ sleep 3
 # Now we send the full list back to server 1 again#
 	ssh $username2'@'$server2 "
 sleep 2; echo "Connecting to server, please wait..."
-	scp $blocklist2 $username1'@'$server1:$opdir2 "
+	scp $blocklist2 $username1'@'$server1:/tmp/ip.blocklist.list2 "
 
 # And merge the file again #
-		mv $opdir2/ip.blocklist.list /tmp/ip.blocklist.list1
-		mv $blocklist1 /tmp/ip.blocklist.list2
-		cat /tmp/ip.blocklist.list1 /tmp/ip.blocklist.list2 > $blocklist1
+		mv $blocklist1 /tmp/ip.blocklist.list1
+		cat /tmp/ip.blocklist.list1 /tmp/ip.blocklist.list2 > /tmp/sort.list
+	echo "Removing Duplicates from Blacklist1"
+		awk '!a[$0]++' /tmp/sort.list >	$blocklist1
 	echo "Cleaning up files NOW"
-		rm /tmp/ip.*
+		rm /tmp/ip.* /tmp/sort.list
 		sudo /etc/init.d/fail2ban restart
 
 	elif [ "$opt" = "Server-Settings" ]; then
