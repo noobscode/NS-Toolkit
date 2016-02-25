@@ -4,15 +4,16 @@ A command-line utility that I made to synch firewall IP-blacklists cross multipl
 
 * GitHub: https://github.com/nordsec/NS-Toolkit
 
-Features
---------
+Technical features:
+-------------------
 
 Did someone say features?
-Technical features:
+
 * Cross-platform: Mac and Linux are officially supported.
 * Written in bash
-* It uses ssh (Secure Shell) to pass commands, and scp (Secure Copy) to transfer files back and forth the individual    servers/clients.
-* mysqldump for database backup
+* It uses ssh (Secure Shell) to pass commands, and scp (Secure Copy) to transfer 
+  files back and forth the individual    servers/clients.
+* mysqldump is used for database backup
 
 Tools available in the Toolbox:
 -------------------------------
