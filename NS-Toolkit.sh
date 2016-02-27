@@ -4,7 +4,6 @@ source functions
 header
 
 if [ "$TOS" = "OK" ]; then
-srvconfcheck
 srvconfig
 
 else
