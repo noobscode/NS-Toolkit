@@ -22,19 +22,17 @@ cat << "EOF"
 EOF
 }
 
-
-function srvconfig {
-if [ -f "config_file" ]; then
+function srvconfcheck {
+if [ -f "/usr/share/NS-Toolkit/config_file" ]; then
 	echo "config present"
 fi
         read -p " overwrite config file? (yes/no) " ans
-
         if [ "$ans" = "yes" ]; then
 	echo "Initializing"
-else
-exit
+	srvconfig
 fi
-#fi
+}
+function srvconfig {
 
 read -p "        Run Config? (y/n)?" CONT
 if [ "$CONT" == "y" ]; then
