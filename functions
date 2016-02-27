@@ -143,17 +143,21 @@ function reconfig {
 
 function kitupdate {
 	echo "Upating NS-Toolkit, please wait..."
-	cd /tmp/
-	git clone https://github.com/nordsec/NS-Toolkit.git
+	git clone https://github.com/nordsec/NS-Toolkit.git /tmp/nstmp
 
 	rm /usr/share/NS-Toolkit/README.md
 	rm /usr/share/NS-Toolkit/NS-Toolkit.sh
 	rm /usr/share/NS-Toolkit/LICENSE
 	rm /usr/share/NS-Toolkit/functions
+	rm /usr/share/NS-Toolkit/setup.sh
+	rm /usr/share/NS-Toolkit/uninstall.sh
 
-	mv /tmp/NS-Toolkit/* /usr/share/NS-Toolkit/
-	chmod +x NS-Toolkit.sh
-	chmod +x uninstall.sh
+	cp /tmp/nstmp/* /usr/share/NS-Toolkit/
+	chmod +x /usr/share/NS-Toolkit/NS-Toolkit.sh
+	chmod +x /usr/share/NS-Toolkit/uninstall.sh
+	chmod +x /usr/share/NS-Toolkit/setup.sh
+	echo "Dishwashing /tmp/"
+	rm -rf /tmp/nstmp
 }
 
 function nsinst {
