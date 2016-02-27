@@ -22,16 +22,16 @@ cat << "EOF"
 EOF
 }
 function srvconfig {
-if [ -f "config_file" ]; then
-        read -p " overwrite config file? (yes/no) " ans
-fi
-        if [ "$ans" = "yes" ]; then
-	echo "Initializing"
-else
-exit
+#if [ -f "config_file" ]; then
+#        read -p " overwrite config file? (yes/no) " ans
+#fi
+#        if [ "$ans" = "yes" ]; then
+#	echo "Initializing"
+#else
+#exit
 
-fi
-read -p "        Run Config? (y/n)?" CONT
+#fi
+read -p " You have to configure the first time you run, Run Config? (y/n)?" CONT
 if [ "$CONT" == "y" ]; then
   echo "Creating config file, please wait...";
 sleep 1
