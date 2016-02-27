@@ -25,17 +25,8 @@ conf=/usr/share/NS-Toolkit/config_file
 
 function srvconfig {
 
-if [ -f $conf ]; then
-	echo "config present"
+if [ ! -f $conf ]; then
 fi
-        read -p " overwrite config file? (yes/no) " ans
-        if [ "$ans" = "yes" ]; then
-	echo "Initializing"
-	srvconfig
-else
-exit
-fi
-
 read -p "        Run Config? (y/n)?" CONT
 if [ "$CONT" == "y" ]; then
   echo "Creating config file, please wait...";

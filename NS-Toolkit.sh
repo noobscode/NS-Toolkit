@@ -11,7 +11,8 @@ echo "Run ./setup.sh first!"
 fi
 # shellcheck disable=SC1091
 source config_file
-
+header
+echo
   OPTIONS="Synch-Firewall Database-Backup Server-Settings Update Help Quit"
 select opt in $OPTIONS; do
 
