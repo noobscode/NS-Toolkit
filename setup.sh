@@ -45,6 +45,6 @@ fi
 
 if [ ! -d "$dir" ]; then
 nsinst
-srvconfig
+
 fi
 exit
