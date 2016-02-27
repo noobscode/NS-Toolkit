@@ -16,7 +16,7 @@
 source functions
 
 if [ "$TOS" = "OK" ]; then
-echo "Config file: OK!"
+echo "Setup: OK!"
 
 else
 echo "Run ./setup.sh first!"
