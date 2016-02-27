@@ -17,9 +17,12 @@ source functions
 
 if [ "$TOS" = "OK" ]; then
 echo "Setup: OK!"
-elif ["$CF" = "OK" ]; then
+else
+echo "Run ./setup.sh first!"
+exit
+fi
+if ["$CF" = "OK" ]; then
 echo "Config: OK!"
-
 else
 echo "Run ./setup.sh first!"
 exit
