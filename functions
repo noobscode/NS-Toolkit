@@ -14,18 +14,18 @@
 
 function header {
 cat << "EOF"
-#         _   _  _____   _______          _ _    _ _
-#        | \ | |/ ____| |__   __|        | | |  (_) |
-#        |  \| | (___      | | ___   ___ | | | ___| |_
-#        | . ` |\___ \     | |/ _ \ / _ \| | |/ / | __|
-#        | |\  |____) |    | | (_) | (_) | |   <| | |_
-#        |_| \_|_____/     |_|\___/ \___/|_|_|\_\_|\__|
+#       _   _  _____   _______          _ _    _ _
+#      | \ | |/ ____| |__   __|        | | |  (_) |
+#      |  \| | (___      | | ___   ___ | | | ___| |_
+#      | . ` |\___ \     | |/ _ \ / _ \| | |/ / | __|
+#      | |\  |____) |    | | (_) | (_) | |   <| | |_
+#      |_| \_|_____/     |_|\___/ \___/|_|_|\_\_|\__|
 #
 #               Welcome To NordSec Toolkit!
 #
-#       - This is a Really handy script to merge multiple
-#         blacklists cross multiple servers for fail2ban or any other firewall.
-#       - Its also possible to make a complete backup of Mysql.
+#     - This is a Really handy script to merge multiple
+#       blacklists cross multiple servers for fail2ban or any other firewall.
+#     - Its also possible to make a complete backup of Mysql.
 #
 #       Created by Alexander Nordbø on the 23.02.2016
 #
