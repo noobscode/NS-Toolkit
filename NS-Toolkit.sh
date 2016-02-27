@@ -21,7 +21,7 @@ else
 echo "Run ./setup.sh first!"
 exit
 fi
-if ["$CF" = "OK" ]; then
+if [ "$CF" = "OK" ]; then
 echo "Config: OK!"
 else
 echo "Run ./setup.sh first!"
