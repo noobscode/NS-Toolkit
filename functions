@@ -175,7 +175,9 @@ function nsinst {
 	echo "found a blue cat, rm removed it, no worries"
 	sleep 3
 	clear
-	echo "Setup Finished seccessfully! type: nstoolkit to start"
+	echo "Setup Finished seccessfully! Running config"
+	sleep 2
+	srvconfig
 
 }
 
