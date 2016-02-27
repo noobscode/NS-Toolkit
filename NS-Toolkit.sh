@@ -15,8 +15,10 @@
 # shellcheck disable=SC1091
 source functions
 
-if [ "$TOS $CF" = "OK" ]; then
-echo "Setup: OK!"; echo "Config: OK!"
+if [ "$TOS" = "OK" ]; then
+echo "Setup: OK!"
+elif ["$CF" = "OK" ]; then
+echo "Config: OK!"
 
 else
 echo "Run ./setup.sh first!"
