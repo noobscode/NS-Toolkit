@@ -158,6 +158,8 @@ function kitupdate {
 	chmod +x /usr/share/NS-Toolkit/setup.sh
 	echo "Dishwashing /tmp/"
 	rm -rf /tmp/nstmp
+	echo "Update success!"
+	mainmen
 }
 
 function nsinst {
