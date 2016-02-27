@@ -101,7 +101,7 @@ function nsinst {
 	echo -e 'cd /usr/share/NS-Toolkit && ./NS-Toolkit.sh' >> /usr/bin/nstoolkit
 	chmod +x /usr/bin/nstoolkit
 	
-	echo 'TOS=OK' > config_file
+	echo 'TOS=OK' >> functions
 	echo "Setup Finished... type: nstoolkit in terminal to start"
 
 }

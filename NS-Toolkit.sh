@@ -1,20 +1,19 @@
 #!/bin/bash
+# shellcheck disable=SC1091
 source functions
 header
 
-if [ ! -f "config_file" ]; then
-echo "WARNING: Missing config_file"; echo "Run ./setup.sh first!"
-exit
-fi
-
 if [ "$TOS" = "OK" ]; then
-
+echo "Lets go!"
+else
+echo "Run ./setup.sh first!"
+fi
 # shellcheck disable=SC1091
 source config_file
 
   OPTIONS="Synch-Firewall Database-Backup Server-Settings Update Help Quit"
 select opt in $OPTIONS; do
-fi
+
 ########### Database-Backup ###############
 
         if [ "$opt" = "Database-Backup" ]; then
