@@ -30,7 +30,7 @@ cat << "EOF"
 #       Created by Alexander Nordbø on the 23.02.2016
 #
 #       https://github.com/nordsec/NS-Toolkit
-echo
+
 EOF
 }
 
