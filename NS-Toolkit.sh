@@ -8,6 +8,7 @@ echo "Lets go!"
 else
 echo "Run ./setup.sh first!"
 fi
+srvconfig
 # shellcheck disable=SC1091
 source config_file
 
