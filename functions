@@ -21,15 +21,17 @@ cat << "EOF"
 #               https://github.com/nordsec/NS-Toolkit
 EOF
 }
-
+conf=/usr/share/NS-Toolkit/config_file
 function srvconfcheck {
-if [ -f "/usr/share/NS-Toolkit/config_file" ]; then
+if [ -f $conf ]; then
 	echo "config present"
 fi
         read -p " overwrite config file? (yes/no) " ans
         if [ "$ans" = "yes" ]; then
 	echo "Initializing"
 	srvconfig
+else
+exit
 fi
 }
 function srvconfig {
