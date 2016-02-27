@@ -24,14 +24,16 @@ EOF
 
 
 function srvconfig {
-#if [ -f "config_file" ]; then
-#        read -p " overwrite config file? (yes/no) " ans
-#fi
-#        if [ "$ans" = "yes" ]; then
-#	echo "Initializing"
-#else
-#exit
+if [ -f "config_file" ]; then
+	echo "config present"
+fi
+        read -p " overwrite config file? (yes/no) " ans
 
+        if [ "$ans" = "yes" ]; then
+	echo "Initializing"
+else
+exit
+fi
 #fi
 
 read -p "        Run Config? (y/n)?" CONT
@@ -72,6 +74,10 @@ clear;
 fi
 }
 
+function reconfig {
+	rm /usr/share/NS-Toolkit/config_file
+	srvconfig
+}
 function kitupdate {
 	echo "Upating NS-Toolkit, please wait..."
 	cd /tmp/

@@ -58,7 +58,7 @@ sleep 2; echo "Connecting to server, please wait..."
 		sudo /etc/init.d/fail2ban restart
 
 	elif [ "$opt" = "Server-Settings" ]; then
-	srvconfig
+	reconfig
 
 	elif [ "$opt" = "Update" ]; then
 	kitupdate
