@@ -4,11 +4,11 @@ source functions
 header
 
 if [ "$TOS" = "OK" ]; then
-echo "Lets go!"
+srvconfig
+
 else
 echo "Run ./setup.sh first!"
 fi
-srvconfig
 # shellcheck disable=SC1091
 source config_file
 
