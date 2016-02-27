@@ -18,6 +18,7 @@ fi
 echo "Installing dependencies"
 sudo apt-get -y --force-yes install $inst -q
 
+echo " Checking if NS-Toolkit is already installed"
 if [ -d "$dir" ]; then
 read -r -p "NS-Toolkit is already installed, would you like to reinstall? (yes/no)" ans
 fi
@@ -26,7 +27,6 @@ if [ "$ans" = "yes" ]; then
 
 rm -rf /usr/share/NS-Toolkit
 rm /usr/bin/nstoolkit
-
 nsinst
 fi
 
