@@ -1,84 +1,31 @@
 #!/bin/bash
+
+#################################################
+#						#
+#		NS-Toolkit			#
+#						#
+#	Author: Alexander Nordbø		#
+#	Mail: alexander@nordsec.no		#
+#						#
+#	Date: 27.02.2016			#
+#						#
+#	https://www.github.com/nordsec		#
+#################################################
+
 # shellcheck disable=SC1091
 source functions
-header
 
-#if [ "TOS" = $OK ]; then
-#echo "Good 2 Go"
+if [ "$TOS" = "OK" ]; then
+echo "Config file: OK!"
 
-#else
-#echo "Run ./setup.sh first!"
-#fi
+else
+echo "Run ./setup.sh first!"
+exit
+fi
 
+if [ ! -f config_file ]; then
 srvconfig
-# shellcheck disable=SC1091
-source config_file
-
-function mainmen {
-header
-echo
-  OPTIONS="Synch-Firewall Database-Backup Settings Update Help Quit"
-select opt in $OPTIONS; do
-
-        if [ "$opt" = "Database-Backup" ]; then
-	mysqlbackup
-
-	elif [ "$opt" = "Synch-Firewall" ]; then
-	fsynch
-
-	elif [ "$opt" = "Settings" ]; then
-	clear	
-	submen
-
-	elif [ "$opt" = "Update" ]; then
-	kitupdate
-
-	elif [ "$opt" = "Help" ]; then
-	echo "Visit: https://github.com/nordsec/NS-Toolkit"
-	cat README.md
-	elif [ "$opt" = "Quit" ]; then
-	exit
-	else
-
-	echo "Bad option"
-
+else
+mainmen
 fi
-done
-}
-
-function submen {
-	header	
-	OPTIONS2="Edit-Config"
-	select opt in $OPTIONS2; do
-if [ "$opt" = "Edit-Config" ]; then
-	nano /usr/share/config_file
-fi
-done
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+exit
