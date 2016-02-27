@@ -1,4 +1,17 @@
 #!/bin/bash
+#################################################
+#						#
+#		NS-Toolkit			#
+#						#
+#	Author: Alexander Nordbø		#
+#	Mail: alexander@nordsec.no		#
+#						#
+#	Date: 27.02.2016			#
+#						#
+#	https://www.github.com/nordsec		#
+#################################################
+
+
 # shellcheck disable=SC1091
 source functions
 
