@@ -1,16 +1,16 @@
 # NordSec Toolkit #
 ```
-  #    _   _  _____   _______          _ _    _ _
-  #   | \ | |/ ____| |__   __|        | | |  (_) |
-  #   |  \| | (___      | | ___   ___ | | | ___| |_
-  #   | . ` |\___ \     | |/ _ \ / _ \| | |/ / | __|
-  #   | |\  |____) |    | | (_) | (_) | |   <| | |_
-  #   |_| \_|_____/     |_|\___/ \___/|_|_|\_\_|\__|  
-  #
-  #		       Welcome To NordSec Toolkit!
+#    _   _  _____   _______          _ _    _ _
+#   | \ | |/ ____| |__   __|        | | |  (_) |
+#   |  \| | (___      | | ___   ___ | | | ___| |_
+#   | . ` |\___ \     | |/ _ \ / _ \| | |/ / | __|
+#   | |\  |____) |    | | (_) | (_) | |   <| | |_
+#   |_| \_|_____/     |_|\___/ \___/|_|_|\_\_|\__|  
+#
+#		       Welcome To NordSec Toolkit!
 
-    1) Synch-Firewall   3) Reconfigure	5) Quit
-    2) Database-Backup  4) Help
+1) Synch-Firewall   3) Settings		5) Help
+2) Database-Backup  4) Update		6) Quit
 ```
 A command-line utility that I made to synch firewall IP-blacklists cross multiple servers. But after some x hours time scripting it turned out to be the start of a toolkit.
 
@@ -21,7 +21,7 @@ Technical features:
 
 Did someone say features?
 
-* Cross-platform: Mac and Linux are officially supported.
+* Platform: Linux are officially supported.
 * Written in bash
 * It uses ssh (Secure Shell) to pass commands, and scp (Secure Copy) to transfer 
   files back and forth the individual    servers/clients.
