@@ -1,15 +1,20 @@
 #!/bin/bash
 source functions
 header
-srvconfig
+
+if [ ! -f "config_file" ]; then
+echo "WARNING: Missing config_file"; echo "Run ./setup.sh first!"
+exit
+fi
+
+if [ "$TOS" = "OK" ]; then
+
 # shellcheck disable=SC1091
 source config_file
 
-header
-
-  OPTIONS="Synch-Firewall Database-Backup Server-Settings Help Quit"
+  OPTIONS="Synch-Firewall Database-Backup Server-Settings Update Help Quit"
 select opt in $OPTIONS; do
-
+fi
 ########### Database-Backup ###############
 
         if [ "$opt" = "Database-Backup" ]; then
@@ -53,16 +58,14 @@ sleep 2; echo "Connecting to server, please wait..."
 		sudo /etc/init.d/fail2ban restart
 
 	elif [ "$opt" = "Server-Settings" ]; then
-
-	#[[ -f ./${sname} ]] && read -p "File exists. Are you sure? " -n 1
-	#[[ ! $REPLY =~ ^[Yy]$ ]] && return 1
 	srvconfig
 
-
+	elif [ "$opt" = "Update" ]; then
+	kitupdate
 
 	elif [ "$opt" = "Help" ]; then
 	echo "Visit: https://github.com/nordsec/NS-Toolkit"
-
+	cat README.md
 	elif [ "$opt" = "Quit" ]; then
 	exit
 	else
