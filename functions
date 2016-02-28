@@ -38,7 +38,7 @@ EOF
 function mainmen {
 header
 echo
-  OPTIONS="Synch-Firewall Database-Backup Settings Update Help Quit"
+  OPTIONS="Sync-Firewall Database-Backup Settings Update Help Quit"
 select opt in $OPTIONS; do
 
         if [ "$opt" = "Database-Backup" ]; then
