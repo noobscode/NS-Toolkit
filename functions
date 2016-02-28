@@ -191,9 +191,11 @@ function fsync {
 	echo "Synching Firewalls Now"
 	read -r -p "Are both lists stored on remote servers? (yes/no)" sans
 	if [ "$sans" = "yes" ]; then
-
 	scp "$username1@$server1:$blocklist1" "$username2@$server2:/tmp/blacklist1"
-  	rm $blocklist1
+	ssh "$username1@$server1" bash < <(
+        printf "rm "$blocklist1"\n"
+	printf "exit\n"
+)
 	echo "Blacklist Seccessfully Sent to server 2"
 else
   echo "Copying blacklist from local dir"
@@ -209,7 +211,7 @@ ssh "$username2@$server2" bash < <(
   echo "Merged and cleaned, moving list back to server 1"
   scp -3 "$username2@$server2:$blocklist2" "$username1@$server1:$blocklist1"
   echo "Firewall-Sync Completed Successfully"
-sleep 2
+	read -r -p "Press [Enter] To continue"
 mainmen
 }
 
