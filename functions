@@ -11,6 +11,7 @@
 #						#
 #	https://www.github.com/nordsec		#
 #################################################
+source config_file
 
 function header {
 cat << "EOF"
@@ -43,8 +44,8 @@ select opt in $OPTIONS; do
         if [ "$opt" = "Database-Backup" ]; then
 	mysqlbackup
 
-	elif [ "$opt" = "Synch-Firewall" ]; then
-	fsynch
+	elif [ "$opt" = "Sync-Firewall" ]; then
+	fsync
 
 	elif [ "$opt" = "Settings" ]; then
 	clear	
@@ -186,36 +187,30 @@ function nsinst {
 
 }
 
-function fsynch {
-	echo "Synching Firewall Now"
-	echo "Copying blocklist from server 1"
-# Move the list of blocked ip's from server 1 to server 2#
-	scp $blocklist1 $username2'@'$server2:/tmp/ip.blocklist.list1
+function fsync {
+	echo "Synching Firewalls Now"
+	read -r -p "Are both lists stored on remote servers? (yes/no)" sans
+	if [ "$sans" = "yes" ]; then
 
-	echo "merging the blocklists"
-#Now ssh in to server 2 and add blocked ip from server 1 the to blocklist on server 2#
-	ssh $username2'@'$server2 "
-		mv $blocklist2 /tmp/ip.blocklist.list2
-		cat /tmp/ip.blocklist.list1 /tmp/ip.blocklist.list2 > $blocklist2
-	echo "Cleaning up"
-		rm /tmp/ip.*
-	echo "restarting services"
-		sudo /etc/init.d/fail2ban restart "
-sleep 3
-	echo "Running the list back to server #1"
-# Now we send the full list back to server 1 again#
-	ssh $username2'@'$server2 "
-sleep 2; echo "Connecting to server, please wait..."
-	scp $blocklist2 $username1'@'$server1:/tmp/ip.blocklist.list2 "
+	scp "$username1@$server1:$blocklist1" "$username2@$server2:/tmp/blacklist1"
+  	rm $blocklist1
+	echo "Blacklist Seccessfully Sent to server 2"
+else
+  echo "Copying blacklist from local dir"
+	scp -3 "$blocklist1" "$username2@$server2:/tmp/blacklist1"
+fi
 
-# And merge the file again #
-		mv $blocklist1 /tmp/ip.blocklist.list1
-		cat /tmp/ip.blocklist.list1 /tmp/ip.blocklist.list2 > /tmp/sort.list
-	echo "Removing Duplicates from Blacklist1"
-		awk '!a[$0]++' /tmp/sort.list >	$blocklist1
-	echo "Cleaning up files NOW"
-		rm /tmp/ip.* /tmp/sort.list
-		sudo /etc/init.d/fail2ban restart
+ssh "$username2@$server2" bash < <(
+  printf "mv "$blocklist2" /tmp/blacklist2\n"
+  printf "awk '!a[\$0]++' /tmp/blacklist1 /tmp/blacklist2 > %q\n" "$blocklist2"
+  printf "rm /tmp/*\n"
+  printf "exit\n"
+)
+  echo "Merged and cleaned, moving list back to server 1"
+  scp -3 "$username2@$server2:$blocklist2" "$username1@$server1:$blocklist1"
+  echo "Firewall-Sync Completed Successfully"
+sleep 2
+mainmen
 }
 
 function mysqlbackup {
