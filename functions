@@ -281,7 +281,7 @@ read -r -p "Type the IP to Unban: " ipaddress
     printf 'fail2ban-client set %s unbanip %s' "$j1" "$ipaddress"
     printf 'fail2ban-client set %s unbanip %s' "$j2" "$ipaddress"
     printf 'fail2ban-client set %s unbanip %s' "$j3"  "$ipaddress"
-	printf 'fail2ban-client set %s unbanip %s' "$j4"  "$ipaddress"
+    printf 'fail2ban-client set %s unbanip %s' "$j4"  "$ipaddress"
     printf 'fail2ban-client set %s unbanip %s' "$j5"  "$ipaddress"
  )   
  ssh "$username2@$server2" bash < <(
@@ -349,6 +349,3 @@ printf '%s\n' "j33${id}=${j33}" '' >> config_file
 printf '%s\n' "j44${id}=${j44}" '' >> config_file
 printf '%s\n' "j55${id}=${j55}" '' >> config_file
 }
-
-TOS="OK"
-CF="OK"
