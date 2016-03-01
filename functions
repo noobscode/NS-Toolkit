@@ -194,11 +194,12 @@ function fsync {
 	read -r -p "Are both lists stored on remote servers? (yes/no)" sans
 	if [ "$sans" = "yes" ]; then
 	scp "$username1@$server1:$blocklist1" "$username2@$server2:/tmp/blacklist1"
-	ssh "$username1@$server1" bash < <(
-    printf "rm "$blocklist1"\n"
-	printf "exit\n"
-)
+	ssh "$username1@$server1" bash << EOF
+    rm $(printf %q "$blocklist1")
+
+EOF
 	echo "Blacklist Seccessfully Sent to server 2"
+
 else
   echo "Copying blacklist from local dir"
 	scp -3 "$blocklist1" "$username2@$server2:/tmp/blacklist1"
@@ -207,14 +208,46 @@ fi
 ssh "$username2@$server2" bash < <(
   printf "mv "$blocklist2" /tmp/blacklist2\n"
   printf "awk '!a[\$0]++' /tmp/blacklist1 /tmp/blacklist2 > %q\n" "$blocklist2"
+  
   printf "rm /tmp/*\n"
   printf "exit\n"
 )
   echo "Merged and cleaned, moving list back to server 1"
   scp -3 "$username2@$server2:$blocklist2" "$username1@$server1:$blocklist1"
+
+
+fsynctab
+
   echo "Firewall-Sync Completed Successfully"
 	read -r -p "Press [Enter] To continue"
-mainmen
+
+fsynctab
+}
+
+function fsynctab {
+	
+	echo "Synching IP-Tables"
+	
+ssh "$username1@$server1" bash << EOF
+	iptables-save > /tmp/iptables1
+EOF
+	scp -3 "$username1@$server1:/tmp/iptables1" "$username2@$server2:/tmp/iptables1"
+
+ssh "$username2@$server2" bash << EOF
+  
+	iptables-save > /tmp/iptables2
+	printf "awk '!a[\$0]++' /tmp/iptables1 /tmp/iptables2 > %q\n" "/tmp/iptables"
+  
+  iptables-restore < /tmp/iptables
+EOF
+
+	scp -3 "$username2@$server2:/tmp/iptables" "$username1@$server1:/tmp/iptables"
+
+ssh "$username1@$server1" bash << EOF
+	
+	iptables-restore < /tmp/iptables
+EOF
+firekit
 }
 
 function mysqlbackup {
@@ -225,7 +258,9 @@ function firekit {
 		clear
 		header
 		
-		echo "If you ban/unban or whitelist any ip it will do the changes to all of the given jails"
+		echo "If you ban/unban or whitelist any ip it will"
+		echo "do the changes to all of the given jails"
+		
 		OPTIONS3="Sync-Firewall Ban-IP Unban-IP Whitelist Fireconf Back"
 		select opt in $OPTIONS3; do
 
@@ -258,9 +293,9 @@ read -r -p "Type the IP to ban: " ipaddress
     
     printf 'fail2ban-client set %s banip %s' "$j1" "$ipaddress"
     printf 'fail2ban-client set %s banip %s' "$j2" "$ipaddress"
-    printf 'fail2ban-client set %s banip %s' "$j3"  "$ipaddress"
-	printf 'fail2ban-client set %s banip %s' "$j4"  "$ipaddress"
-    printf 'fail2ban-client set %s banip %s' "$j5"  "$ipaddress"
+    printf 'fail2ban-client set %s banip %s' "$j3" "$ipaddress"
+	printf 'fail2ban-client set %s banip %s' "$j4" "$ipaddress"
+    printf 'fail2ban-client set %s banip %s' "$j5" "$ipaddress"
 
 )   
  ssh "$username2@$server2" bash < <(
@@ -281,7 +316,7 @@ read -r -p "Type the IP to Unban: " ipaddress
     printf 'fail2ban-client set %s unbanip %s' "$j1" "$ipaddress"
     printf 'fail2ban-client set %s unbanip %s' "$j2" "$ipaddress"
     printf 'fail2ban-client set %s unbanip %s' "$j3"  "$ipaddress"
-    printf 'fail2ban-client set %s unbanip %s' "$j4"  "$ipaddress"
+	printf 'fail2ban-client set %s unbanip %s' "$j4"  "$ipaddress"
     printf 'fail2ban-client set %s unbanip %s' "$j5"  "$ipaddress"
  )   
  ssh "$username2@$server2" bash < <(
