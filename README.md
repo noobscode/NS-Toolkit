@@ -7,14 +7,13 @@
 #   | |\  |____) |    | | (_) | (_) | |   <| | |_
 #   |_| \_|_____/     |_|\___/ \___/|_|_|\_\_|\__|  
 #
-#		       Welcome To NordSec Toolkit!
+#		       Welcome To NoobsCode Toolkit!
 
 1) Synch-Firewall   3) Settings		5) Help
 2) Database-Backup  4) Update		6) Quit
 ```
 A command-line utility that I made to synch firewall IP-blacklists cross multiple servers. But after some x hours time scripting it turned out to be the start of a toolkit.
 
-* GitHub: https://github.com/nordsec/NS-Toolkit
 
 Technical features:
 -------------------
@@ -41,9 +40,8 @@ Support This Project
 
 Author
 ------
-* Name: Alexander Nordbø
+* Name: NoobCode
   
   Visit us at
   -----------
-* https://www.hackingdefinedexperts.com
 * https://github.com/nordsec/NS-Toolkit
