@@ -11,6 +11,8 @@
 #						#
 #	https://www.github.com/noobscode		#
 #################################################
+
+# shellcheck disable=SC1091
 source config_file
 
 function header {
@@ -38,17 +40,17 @@ EOF
 function mainmen {
 header
 echo
-  OPTIONS="Sync-Firewall Database-Backup Settings Update Help Quit"
+  OPTIONS="Firekit Database-Backup Settings Update Help Quit"
 select opt in $OPTIONS; do
 
         if [ "$opt" = "Database-Backup" ]; then
 	mysqlbackup
 
-	elif [ "$opt" = "Sync-Firewall" ]; then
-	fsync
+	elif [ "$opt" = "Firekit" ]; then
+	firekit
 
 	elif [ "$opt" = "Settings" ]; then
-	clear	
+	clear
 	submen
 
 	elif [ "$opt" = "Update" ]; then
@@ -68,7 +70,7 @@ done
 }
 
 function submen {
-	header	
+	header
 	OPTIONS2="Edit-Config Back"
 	select opt in $OPTIONS2; do
 if [ "$opt" = "Edit-Config" ]; then
@@ -95,7 +97,7 @@ fi
 
 echo "NS-Toolkit Need a config file for it to work"
 
-read -p " Run Config? (yes/no)?" CONT
+read -r -p " Run Config? (yes/no)?" CONT
 if [ "$CONT" == "yes" ]; then
   echo "Creating config file, please wait...";
 sleep 1
@@ -103,20 +105,20 @@ sleep 1
 #id=1; You can use server ID if you like.
 
 # Server 1
-read -p " Whats the Server1 Hostname or IP?   :" server1;
-read -p " Whats the Server1 Username?   :" username1;
-read -p " Write the full dir to list (/etc/fail2ban/blacklist)   :" blocklist1;
+read -r -p " Whats the Server1 Hostname or IP?   :" server1;
+read -r -p " Whats the Server1 Username?   :" username1;
+read -r -p " Write the full dir to list (/etc/fail2ban/blacklist)   :" blocklist1;
 
 # Server 2
-read -p " Whats the Server2 Hostname or IP?   :" server2;
-read -p " Whats the Server2 Username?   :" username2;
-read -p " Write the full dir to list (/etc/fail2ban/blacklist)   :" blocklist2;
-#read -p " Optional Directory on server2   :" opdir2;
+read -r -p " Whats the Server2 Hostname or IP?   :" server2;
+read -r -p " Whats the Server2 Username?   :" username2;
+read -r -p " Write the full dir to list (/etc/fail2ban/blacklist)   :" blocklist2;
+#read -r -p " Optional Directory on server2   :" opdir2;
 
 # Mysql
-read -p " Whats the Mysql's Hostname?   :" mysqlsrv;
-read -p " What is the username for Mysql?   :" mysqluser;
-read -p " Tell Mysql where to store backups of the database   :" backupdir;
+read -r -p " Whats the Mysql's Hostname?   :" mysqlsrv;
+read -r -p " What is the username for Mysql?   :" mysqluser;
+read -r -p " Tell Mysql where to store backups of the database   :" backupdir;
 echo "Good job!, Now give us a seck while we build the config and send you of to the toolbox"
 sleep 3
 
@@ -163,19 +165,19 @@ function kitupdate {
 }
 
 function nsinst {
-	cd /usr/share/
+	cd /usr/share/ || return
 	echo -n "Downloading Toolbox,"; sleep 1; echo " Adding a Hammer,"; sleep 1; echo "screw driver and a cat?"
 	git clone https://github.com/nordsec/NS-Toolkit.git
-	cd NS-Toolkit/
+	cd NS-Toolkit/ || return
 	chmod +x NS-Toolkit.sh
-	chmod +x uninstall.sh	
+	chmod +x uninstall.sh
 
 	echo "Creating shortcut"
 
 	echo -e '#!/bin/bash' > /usr/bin/nstoolkit
 	echo -e 'cd /usr/share/NS-Toolkit && ./NS-Toolkit.sh' >> /usr/bin/nstoolkit
 	chmod +x /usr/bin/nstoolkit
-	
+
 	echo 'TOS="OK"' >> functions
 	clear
 	echo "found a blue cat, rm removed it, no worries"
@@ -192,11 +194,12 @@ function fsync {
 	read -r -p "Are both lists stored on remote servers? (yes/no)" sans
 	if [ "$sans" = "yes" ]; then
 	scp "$username1@$server1:$blocklist1" "$username2@$server2:/tmp/blacklist1"
-	ssh "$username1@$server1" bash < <(
-        printf "rm "$blocklist1"\n"
-	printf "exit\n"
-)
+	ssh "$username1@$server1" bash << EOF
+    rm $(printf %q "$blocklist1")
+
+EOF
 	echo "Blacklist Seccessfully Sent to server 2"
+
 else
   echo "Copying blacklist from local dir"
 	scp -3 "$blocklist1" "$username2@$server2:/tmp/blacklist1"
@@ -205,16 +208,179 @@ fi
 ssh "$username2@$server2" bash < <(
   printf "mv "$blocklist2" /tmp/blacklist2\n"
   printf "awk '!a[\$0]++' /tmp/blacklist1 /tmp/blacklist2 > %q\n" "$blocklist2"
+  
   printf "rm /tmp/*\n"
   printf "exit\n"
 )
   echo "Merged and cleaned, moving list back to server 1"
   scp -3 "$username2@$server2:$blocklist2" "$username1@$server1:$blocklist1"
+
+
+fsynctab
+
   echo "Firewall-Sync Completed Successfully"
 	read -r -p "Press [Enter] To continue"
-mainmen
+
+fsynctab
+}
+
+function fsynctab {
+	
+	echo "Synching IP-Tables"
+	
+ssh "$username1@$server1" bash << EOF
+	iptables-save > /tmp/iptables1
+EOF
+	scp -3 "$username1@$server1:/tmp/iptables1" "$username2@$server2:/tmp/iptables1"
+
+ssh "$username2@$server2" bash << EOF
+  
+	iptables-save > /tmp/iptables2
+	printf "awk '!a[\$0]++' /tmp/iptables1 /tmp/iptables2 > %q\n" "/tmp/iptables"
+  
+  iptables-restore < /tmp/iptables
+EOF
+
+	scp -3 "$username2@$server2:/tmp/iptables" "$username1@$server1:/tmp/iptables"
+
+ssh "$username1@$server1" bash << EOF
+	
+	iptables-restore < /tmp/iptables
+EOF
+firekit
 }
 
 function mysqlbackup {
 	mysqldump --user=$mysqluser -p --host=$mysqlsrv --all-databases > $backupdir"dump-$( date '+%Y-%m-%d_%H-%M-%S' ).sql"
+}
+
+function firekit {
+		clear
+		header
+		
+		echo "If you ban/unban or whitelist any ip it will"
+		echo "do the changes to all of the given jails"
+		
+		OPTIONS3="Sync-Firewall Ban-IP Unban-IP Whitelist Fireconf Back"
+		select opt in $OPTIONS3; do
+
+	if [ "$opt" = "Sync-Firewall" ]; then
+	fsync
+
+	elif [ "$opt" = "Ban-IP" ]; then
+	sendcmd1
+
+	elif [ "$opt" = "Unban-IP" ]; then
+	sendcmd2
+
+	elif [ "$opt" = "Whitelist" ]; then
+	sendcmd3
+
+	elif [ "$opt" = "Fireconf" ]; then
+	fireconf
+
+	elif [ "$opt" = "Back" ]; then
+	mainmen
+
+fi
+done
+}
+
+function sendcmd1 {
+
+ssh "$username1@$server1" bash < <(
+read -r -p "Type the IP to ban: " ipaddress
+    
+    printf 'fail2ban-client set %s banip %s' "$j1" "$ipaddress"
+    printf 'fail2ban-client set %s banip %s' "$j2" "$ipaddress"
+    printf 'fail2ban-client set %s banip %s' "$j3" "$ipaddress"
+	printf 'fail2ban-client set %s banip %s' "$j4" "$ipaddress"
+    printf 'fail2ban-client set %s banip %s' "$j5" "$ipaddress"
+
+)   
+ ssh "$username2@$server2" bash < <(
+
+    printf 'fail2ban-client set %s banip %s' "$j11" "$ipaddress"
+    printf 'fail2ban-client set %s banip %s' "$j22" "$ipaddress"
+    printf 'fail2ban-client set %s banip %s' "$j33" "$ipaddress"
+    printf 'fail2ban-client set %s banip %s' "$j44" "$ipaddress"
+    printf 'fail2ban-client set %s banip %s' "$j55" "$ipaddress"
+)
+}
+
+function sendcmd2 {
+
+ssh "$username1@$server1" bash < <(
+read -r -p "Type the IP to Unban: " ipaddress
+
+    printf 'fail2ban-client set %s unbanip %s' "$j1" "$ipaddress"
+    printf 'fail2ban-client set %s unbanip %s' "$j2" "$ipaddress"
+    printf 'fail2ban-client set %s unbanip %s' "$j3"  "$ipaddress"
+	printf 'fail2ban-client set %s unbanip %s' "$j4"  "$ipaddress"
+    printf 'fail2ban-client set %s unbanip %s' "$j5"  "$ipaddress"
+ )   
+ ssh "$username2@$server2" bash < <(
+
+    printf 'fail2ban-client set %s unbanip %s' "$j11" "$ipaddress"
+    printf 'fail2ban-client set %s unbanip %s' "$j22" "$ipaddress"
+    printf 'fail2ban-client set %s unbanip %s' "$j33" "$ipaddress"
+    printf 'fail2ban-client set %s unbanip %s' "$j44" "$ipaddress"
+    printf 'fail2ban-client set %s unbanip %s' "$j55" "$ipaddress"
+)
+}
+
+function sendcmd3 {
+
+ssh "$username1@$server1" bash < <(
+read -r -p "Type the IP to whitelist: " ipaddress
+
+    printf 'fail2ban-client set %s addignoreip %s' "$j1" "$ipaddress"
+    printf 'fail2ban-client set %s addignoreip %s' "$j2" "$ipaddress"
+    printf 'fail2ban-client set %s addignoreip %s' "$j3" "$ipaddress"
+	printf 'fail2ban-client set %s addignoreip %s' "$j4" "$ipaddress"
+    printf 'fail2ban-client set %s addignoreip %s' "$j5" "$ipaddress"
+)
+ ssh "$username2@$server2" bash < <(
+
+    printf 'fail2ban-client set %s addignoreip %s' "$j11" "$ipaddress"
+    printf 'fail2ban-client set %s addignoreip %s' "$j22" "$ipaddress"
+    printf 'fail2ban-client set %s addignoreip %s' "$j33" "$ipaddress"
+    printf 'fail2ban-client set %s addignoreip %s' "$j44" "$ipaddress"
+    printf 'fail2ban-client set %s addignoreip %s' "$j55" "$ipaddress"
+)
+}
+
+function fireconf {
+# Server 1
+echo "Tell the toolbox the name of your jail"
+sleep 2
+echo "You can find the jail-names by typing fail2ban-client -status"
+read -r -p " Press [ENTER] To continue..."
+
+read -r -p "jailname 1:" j1
+read -r -p "jailname 2:" j2
+read -r -p "jailname 3:" j3
+read -r -p "jailname 4:" j4
+read -r -p "jailname 5:" j5
+
+echo "Now the jail-names for server 2"
+sleep 1
+
+read -r -p "jailname 1:" j11
+read -r -p "jailname 2:" j22
+read -r -p "jailname 3:" j33
+read -r -p "jailname 4:" j44
+read -r -p "jailname 5:" j55
+
+printf '%s\n' "j1${id}=${j1}" '' >> config_file
+printf '%s\n' "j2${id}=${j2}" '' >> config_file
+printf '%s\n' "j3${id}=${j3}" '' >> config_file
+printf '%s\n' "j4${id}=${j4}" '' >> config_file
+printf '%s\n' "j5${id}=${j5}" '' >> config_file
+
+printf '%s\n' "j11${id}=${j11}" '' >> config_file
+printf '%s\n' "j22${id}=${j22}" '' >> config_file
+printf '%s\n' "j33${id}=${j33}" '' >> config_file
+printf '%s\n' "j44${id}=${j44}" '' >> config_file
+printf '%s\n' "j55${id}=${j55}" '' >> config_file
 }
